@@ -1,11 +1,13 @@
 # Bitcoin Price Prediction
 
 This project predicts Bitcoin's closing price based on historical data using machine learning.
+Hosted [here](https://btc-closing-price-prediction.onrender.com/)
 
 ## Features
 - Takes **opening price, closing price, and volume** for multiple consecutive days as input.
-- Uses a **machine learning model** to predict the next closing price.
+- Uses a **RandomForest** to predict the next closing price.
 - Exposes an API endpoint to receive input data and return predictions.
+- Provides a simple user interface to interact and predict BTC prices.
 
 ---
 
