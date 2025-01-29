@@ -1,13 +1,17 @@
 import joblib
 import logging
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 def create_app():
     app = Flask(__name__)
     model = joblib.load("model/model.pkl")
 
     logger = logging.getLogger()
+
+    @app.get("/")
+    def index():
+        return render_template("index.html")
 
     @app.post("/predict")
     def predict():
@@ -22,7 +26,7 @@ def create_app():
         try:
             predicted_price = model.predict_and_calculate_closing_price(x)
         except BaseException as e:
-            logger.error(f"Error predicting closing price: {e}")
+            logger.error(f"Error predicting closing price: {str(e)}")
 
             return jsonify({
                 "success": False,

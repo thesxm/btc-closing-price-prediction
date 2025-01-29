@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #ff9800;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #e68900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>BTC Price Prediction</h2>
+        <form id="priceForm">
+            <div id="inputs">
+                <!-- Generate input fields dynamically using JavaScript -->
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let inputsContainer = document.getElementById("inputs");
+            for (let i = 1; i <= 4; i++) {
+                inputsContainer.innerHTML += `
+                    <h3>Day ${i}</h3>
+                    <input type="number" name="open_day${i}" placeholder="Opening Price" required>
+                    <input type="number" name="close_day${i}" placeholder="Closing Price" required>
+                    <input type="number" name="volume_day${i}" placeholder="Volume" required>
+                `;
+            }
+        });
+
+        document.getElementById("priceForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData(this);
+            let jsonData = [];
+	    for (let i = 1; i <= 4; i++) {
+		    jsonData.push([Number(formData.get(`open_day${i}`)), Number(formData.get(`close_day${i}`)), Number(formData.get(`volume_day${i}`))]);
+	    }
+
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+		if (data.success) {
+		    alert(`Predicted price: ${data.predicted_price}`);
+		} else {
+		    alert(`Error: ${data.error}`);
+		}
+            })
+	    .catch(error => alert(`Error: ${error}`));
+        });
+    </script>
+</body>
+</html>
+
